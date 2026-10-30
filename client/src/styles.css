@@ -191,30 +191,11 @@ h1, h2, h3, p {
   max-width: none;
   padding: 3rem 2rem 4rem;
   display: grid;
-  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) minmax(220px, 300px);
-  grid-template-areas: 'services stocks intro';
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  grid-template-areas: 'services stocks';
   gap: 2.5rem;
   align-items: start;
   animation: fade-in 0.3s ease-out;
-}
-.home__intro {
-  grid-area: intro;
-  position: sticky;
-  top: 112px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  padding-top: 2rem;
-}
-.home__title {
-  font-size: clamp(2.25rem, 3vw, 3rem);
-  white-space: nowrap;
-  letter-spacing: -0.04em;
-  line-height: 1.05;
-}
-.home__tagline {
-  font-size: 1.2rem;
-  color: var(--muted);
 }
 .home__services {
   grid-area: services;
@@ -242,8 +223,7 @@ h1, h2, h3, p {
 .stocks {
   grid-area: stocks;
   width: 100%;
-  max-width: 680px;
-  justify-self: center;
+  max-width: 1100px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -256,7 +236,7 @@ h1, h2, h3, p {
 }
 .stocks__updated,
 .stocks__note {
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   color: var(--muted);
 }
 .stocks__card {
@@ -283,7 +263,7 @@ h1, h2, h3, p {
 }
 .stocks__table th,
 .stocks__table td {
-  padding: 0.85rem 1.1rem;
+  padding: 1.15rem 1.5rem;
   text-align: left;
   font-weight: 400;
   vertical-align: middle;
@@ -293,20 +273,20 @@ h1, h2, h3, p {
 }
 .stock__name strong {
   display: block;
-  font-size: 1rem;
+  font-size: 1.35rem;
   letter-spacing: 0.01em;
 }
 .stock__name span {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   color: var(--muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 18ch;
+  max-width: 24ch;
 }
 .stock__trend {
-  width: 112px;
+  width: 180px;
 }
 .spark {
   display: block;
@@ -319,6 +299,7 @@ h1, h2, h3, p {
 }
 .stocks__table .stock__price {
   text-align: right;
+  font-size: 1.4rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -329,17 +310,17 @@ h1, h2, h3, p {
 }
 .stock__change small {
   display: block;
-  font-size: 0.75rem;
-  margin-top: 0.2rem;
+  font-size: 0.95rem;
+  margin-top: 0.3rem;
   font-variant-numeric: tabular-nums;
 }
 .pill {
   display: inline-block;
-  min-width: 4.5rem;
+  min-width: 6rem;
   text-align: center;
-  padding: 0.2rem 0.5rem;
+  padding: 0.35rem 0.75rem;
   border-radius: 999px;
-  font-size: 0.8rem;
+  font-size: 1.05rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -355,6 +336,21 @@ h1, h2, h3, p {
 @media (max-width: 520px) {
   .stock__trend {
     display: none;
+  }
+  .stocks__table th,
+  .stocks__table td {
+    padding: 0.9rem 1rem;
+  }
+  .stock__name strong,
+  .stocks__table .stock__price {
+    font-size: 1.1rem;
+  }
+  .stock__name span {
+    max-width: 14ch;
+  }
+  .pill {
+    min-width: 4.75rem;
+    font-size: 0.9rem;
   }
 }
 .services {
@@ -928,24 +924,10 @@ h1, h2, h3, p {
   * { animation: none !important; transition: none !important; }
 }
 
-@media (max-width: 1180px) {
-  .home {
-    grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
-    grid-template-areas:
-      'services intro'
-      'services stocks';
-    padding: 2.5rem 1.5rem 4rem;
-  }
-  .home__intro {
-    position: static;
-    padding-top: 0;
-  }
-}
-
 @media (max-width: 860px) {
   .home {
     grid-template-columns: 1fr;
-    grid-template-areas: 'intro' 'stocks' 'services';
+    grid-template-areas: 'stocks' 'services';
     gap: 2rem;
     padding: 2rem 1.25rem 3rem;
   }

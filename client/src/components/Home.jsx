@@ -30,13 +30,6 @@ const SERVICES = [
 export default function Home({ onGetStarted }) {
   return (
     <main className="home container">
-      <section className="home__intro">
-        <h2 className="home__title">
-          <span className="logo__mark" aria-hidden="true">◆</span> Nova Bank
-        </h2>
-        <p className="home__tagline">Simple, secure banking for everyday life.</p>
-      </section>
-
       <section className="home__services" aria-labelledby="services-heading">
         <h3 id="services-heading" className="home__subtitle">
           Our banking services

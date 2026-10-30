@@ -30,7 +30,7 @@ client/                     React SPA (Vite root)
     api.js                  Fetch wrapper for the REST API
     format.js               Currency/date formatting helpers
     components/
-      Home.jsx              Signed-out home page: services column, popular stocks, title
+      Home.jsx              Signed-out home page: services column + popular stocks
       PopularStocks.jsx     Sample stock quotes with sparklines (refreshes every 5s)
       AuthPage.jsx          Login + register forms
       Dashboard.jsx         Overview, accounts and activity

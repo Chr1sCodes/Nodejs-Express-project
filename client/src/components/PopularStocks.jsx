@@ -7,8 +7,8 @@ const signed = (n, suffix = '') => `${n > 0 ? '+' : n < 0 ? '−' : ''}${Math.ab
 
 function Sparkline({ points, up }) {
   if (points.length < 2) return null;
-  const w = 96;
-  const h = 32;
+  const w = 160;
+  const h = 44;
   const min = Math.min(...points);
   const range = Math.max(...points) - min || 1;
   const d = points
@@ -16,7 +16,7 @@ function Sparkline({ points, up }) {
     .join('');
   return (
     <svg className={`spark ${up ? 'spark--up' : 'spark--down'}`} width={w} height={h} viewBox={`0 0 ${w} ${h}`} aria-hidden="true">
-      <path d={d} fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d={d} fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
