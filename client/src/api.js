@@ -30,6 +30,8 @@ export const api = {
     request('/auth/register', { method: 'POST', body: { name, email, password } }),
   logout: () => request('/auth/logout', { method: 'POST' }),
 
+  popularStocks: () => request('/market/popular'),
+
   accounts: () => request('/accounts'),
   transactions: (accountId) => request(`/transactions${accountId ? `?accountId=${accountId}` : ''}`),
   deposit: (accountId, amount, description) =>

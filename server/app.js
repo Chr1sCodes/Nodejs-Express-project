@@ -7,6 +7,7 @@ import { createAccountRepository } from './data/accountRepository.js';
 import { createAuthRouter } from './routes/auth.js';
 import { createAccountRouter } from './routes/accounts.js';
 import { loadSession, requireJson } from './middleware/auth.js';
+import { createMarket } from './services/market.js';
 import { AppError } from './errors.js';
 
 /**
@@ -17,6 +18,7 @@ export function createApp({
   staticDir,
   secureCookies = false,
   loginRateLimit = { windowMs: 15 * 60 * 1000, max: 20 },
+  market = createMarket(),
 } = {}) {
   const app = express();
   const users = createUserRepository(db);
@@ -40,6 +42,7 @@ export function createApp({
   app.use('/api', loadSession({ sessions, users }));
 
   app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
+  app.get('/api/market/popular', (_req, res) => res.json(market.snapshot()));
   app.use('/api/auth', createAuthRouter({ db, users, sessions, accounts, secureCookies, loginRateLimit }));
   app.use('/api', createAccountRouter({ accounts }));
   app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found' }));

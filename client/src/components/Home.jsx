@@ -1,3 +1,5 @@
+import PopularStocks from './PopularStocks.jsx';
+
 const SERVICES = [
   {
     title: 'Checking accounts',
@@ -51,6 +53,8 @@ export default function Home({ onGetStarted }) {
           Sign in or open an account
         </button>
       </section>
+
+      <PopularStocks />
     </main>
   );
 }

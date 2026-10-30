@@ -188,17 +188,17 @@ h1, h2, h3, p {
 
 /* Home page */
 .home {
-  padding-top: 3rem;
-  padding-bottom: 4rem;
+  max-width: none;
+  padding: 3rem 2rem 4rem;
   display: grid;
-  grid-template-columns: minmax(280px, 380px) 1fr;
-  gap: 3rem;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) minmax(220px, 300px);
+  grid-template-areas: 'services stocks intro';
+  gap: 2.5rem;
   align-items: start;
   animation: fade-in 0.3s ease-out;
 }
 .home__intro {
-  grid-column: 2;
-  grid-row: 1;
+  grid-area: intro;
   position: sticky;
   top: 112px;
   display: flex;
@@ -207,7 +207,8 @@ h1, h2, h3, p {
   padding-top: 2rem;
 }
 .home__title {
-  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  font-size: clamp(2.25rem, 3vw, 3rem);
+  white-space: nowrap;
   letter-spacing: -0.04em;
   line-height: 1.05;
 }
@@ -216,8 +217,7 @@ h1, h2, h3, p {
   color: var(--muted);
 }
 .home__services {
-  grid-column: 1;
-  grid-row: 1;
+  grid-area: services;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -228,6 +228,134 @@ h1, h2, h3, p {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.stocks {
+  grid-area: stocks;
+  width: 100%;
+  max-width: 680px;
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.stocks__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.stocks__updated,
+.stocks__note {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.stocks__card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.stocks__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 3rem 1rem;
+  color: var(--muted);
+}
+.stocks__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.stocks__table tr + tr > * {
+  border-top: 1px solid var(--border);
+}
+.stocks__table th,
+.stocks__table td {
+  padding: 0.85rem 1.1rem;
+  text-align: left;
+  font-weight: 400;
+  vertical-align: middle;
+}
+.stocks__table tbody tr:hover {
+  background: var(--surface-2);
+}
+.stock__name strong {
+  display: block;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+}
+.stock__name span {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 18ch;
+}
+.stock__trend {
+  width: 112px;
+}
+.spark {
+  display: block;
+}
+.spark--up path {
+  stroke: var(--in);
+}
+.spark--down path {
+  stroke: var(--out);
+}
+.stocks__table .stock__price {
+  text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.stocks__table .stock__change {
+  text-align: right;
+  white-space: nowrap;
+  width: 1%;
+}
+.stock__change small {
+  display: block;
+  font-size: 0.75rem;
+  margin-top: 0.2rem;
+  font-variant-numeric: tabular-nums;
+}
+.pill {
+  display: inline-block;
+  min-width: 4.5rem;
+  text-align: center;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.pill--up {
+  color: var(--in);
+  background: color-mix(in srgb, var(--in) 14%, transparent);
+}
+.pill--down {
+  color: var(--out);
+  background: color-mix(in srgb, var(--out) 14%, transparent);
+}
+
+@media (max-width: 520px) {
+  .stock__trend {
+    display: none;
+  }
 }
 .services {
   list-style: none;
@@ -800,19 +928,26 @@ h1, h2, h3, p {
   * { animation: none !important; transition: none !important; }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1180px) {
   .home {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  .home__intro,
-  .home__services {
-    grid-column: 1;
-    grid-row: auto;
+    grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+    grid-template-areas:
+      'services intro'
+      'services stocks';
+    padding: 2.5rem 1.5rem 4rem;
   }
   .home__intro {
     position: static;
     padding-top: 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .home {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'intro' 'stocks' 'services';
+    gap: 2rem;
+    padding: 2rem 1.25rem 3rem;
   }
   .auth {
     grid-template-columns: 1fr;

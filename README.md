@@ -30,7 +30,8 @@ client/                     React SPA (Vite root)
     api.js                  Fetch wrapper for the REST API
     format.js               Currency/date formatting helpers
     components/
-      Home.jsx              Signed-out home page: services column + title
+      Home.jsx              Signed-out home page: services column, popular stocks, title
+      PopularStocks.jsx     Sample stock quotes with sparklines (refreshes every 5s)
       AuthPage.jsx          Login + register forms
       Dashboard.jsx         Overview, accounts and activity
       AccountCard.jsx
@@ -45,6 +46,7 @@ server/
     auth.js                 Session loading, requireAuth, JSON-only (CSRF) guard
     rateLimit.js            In-memory rate limiter
   services/password.js      scrypt hashing / verification
+  services/market.js        Simulated stock prices (in-memory random walk)
   routes/
     auth.js                 /api/auth/*
     accounts.js             /api/accounts, /api/transactions, /api/transfers
@@ -58,6 +60,7 @@ server/
 test/
   api.test.js               API integration tests (node:test)
   seed.test.js              Demo data integrity + login tests
+  market.test.js            Sample market data + endpoint tests
 ```
 
 ## Getting started
@@ -126,6 +129,7 @@ All bodies are JSON. Amounts are sent in dollars (`"12.34"` or `12.34`, max 2 de
 | POST   | `/api/accounts/:id/withdraw` | ✓    | `{ amount, description? }` — 422 if insufficient funds            |
 | POST   | `/api/transfers`             | ✓    | `{ fromAccountId, toAccountNumber, amount, description? }`        |
 | GET    | `/api/transactions`          | ✓    | Query: `accountId?`, `limit?` (default 50, max 200)               |
+| GET    | `/api/market/popular`        |      | Simulated quotes for popular stocks (sample data, not real prices) |
 
 Passwords must be 8–128 characters and include at least one letter and one number.
 
