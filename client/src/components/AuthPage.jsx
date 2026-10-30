@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { api } from '../api.js';
 
 const EMPTY = { name: '', email: '', password: '', confirm: '' };
@@ -16,8 +16,9 @@ function passwordStrength(pw) {
 }
 const STRENGTH = ['Too weak', 'Weak', 'Fair', 'Good', 'Strong'];
 
-export default function AuthPage({ onAuthenticated }) {
+export default function AuthPage({ focusSignal = 0, onAuthenticated }) {
   const [mode, setMode] = useState('login');
+  const cardRef = useRef(null);
   const [form, setForm] = useState(EMPTY);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -31,6 +32,13 @@ export default function AuthPage({ onAuthenticated }) {
     setError('');
     setForm((f) => ({ ...EMPTY, email: f.email }));
   };
+
+  // The header's person button bumps focusSignal to bring the form into view.
+  useEffect(() => {
+    if (!focusSignal || !cardRef.current) return;
+    cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    cardRef.current.querySelector('input')?.focus({ preventScroll: true });
+  }, [focusSignal]);
 
   const validate = () => {
     if (isRegister) {
@@ -78,7 +86,7 @@ export default function AuthPage({ onAuthenticated }) {
         </ul>
       </section>
 
-      <section className="auth__card">
+      <section className="auth__card" ref={cardRef}>
         <div className="tabs" role="tablist" aria-label="Authentication">
           {[
             ['login', 'Sign in'],

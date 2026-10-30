@@ -1,4 +1,13 @@
-export default function Header({ user, theme, onToggleTheme, onLogout }) {
+function PersonIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+    </svg>
+  );
+}
+
+export default function Header({ user, theme, onToggleTheme, onLogout, onAccountClick }) {
   return (
     <header className="header">
       <div className="container header__inner">
@@ -14,6 +23,16 @@ export default function Header({ user, theme, onToggleTheme, onLogout }) {
           >
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
+          {user === null && (
+            <button
+              className="btn btn--ghost btn--icon person-btn"
+              onClick={onAccountClick}
+              aria-label="Sign in or create an account"
+              title="Sign in / Sign up"
+            >
+              <PersonIcon />
+            </button>
+          )}
           {user && (
             <>
               <span className="header__user" title={user.email}>

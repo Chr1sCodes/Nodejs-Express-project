@@ -163,6 +163,11 @@ h1, h2, h3, p {
 .btn--icon {
   padding: 0.45rem 0.65rem;
 }
+.person-btn {
+  display: inline-grid;
+  place-items: center;
+  color: var(--primary);
+}
 .icon-btn {
   background: none;
   border: none;
@@ -313,6 +318,7 @@ h1, h2, h3, p {
   font-weight: 500;
 }
 .auth__card {
+  scroll-margin-top: 72px;
   display: flex;
   flex-direction: column;
   justify-content: center;

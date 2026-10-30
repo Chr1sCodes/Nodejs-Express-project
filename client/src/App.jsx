@@ -8,6 +8,7 @@ import { useLocalStorage } from './hooks.js';
 
 export default function App() {
   const [user, setUser] = useState(undefined); // undefined = checking session, null = signed out
+  const [authFocus, setAuthFocus] = useState(0);
   const [toasts, setToasts] = useState([]);
   const [theme, setTheme] = useLocalStorage(
     'theme',
@@ -51,6 +52,7 @@ export default function App() {
         theme={theme}
         onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
         onLogout={handleLogout}
+        onAccountClick={() => setAuthFocus((n) => n + 1)}
       />
       {user === undefined ? (
         <div className="loading" aria-live="polite">
@@ -60,6 +62,7 @@ export default function App() {
         <Dashboard user={user} notify={notify} />
       ) : (
         <AuthPage
+          focusSignal={authFocus}
           onAuthenticated={(u, isNew) => {
             setUser(u);
             notify(isNew ? `Welcome to Nova Bank, ${u.name}!` : `Welcome back, ${u.name}`);
