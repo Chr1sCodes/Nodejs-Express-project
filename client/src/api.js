@@ -1,9 +1,9 @@
-let onUnauthorized = () => {};
+import { createDemoApi } from './demoApi.js';
 
-/** Registers a callback fired when the session has expired (401 from a protected route). */
-export const setUnauthorizedHandler = (fn) => {
-  onUnauthorized = fn;
-};
+/** True when built for static hosting (GitHub Pages): data lives in the browser instead of the Express API. */
+export const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true';
+
+let onUnauthorized = () => {};
 
 async function request(path, { method = 'GET', body } = {}) {
   const res = await fetch(`/api${path}`, {
@@ -23,7 +23,7 @@ async function request(path, { method = 'GET', body } = {}) {
   return data;
 }
 
-export const api = {
+const httpApi = {
   me: () => request('/auth/me'),
   login: (email, password) => request('/auth/login', { method: 'POST', body: { email, password } }),
   register: (name, email, password) =>
@@ -40,4 +40,14 @@ export const api = {
     request(`/accounts/${accountId}/withdraw`, { method: 'POST', body: { amount, description } }),
   transfer: (fromAccountId, toAccountNumber, amount, description) =>
     request('/transfers', { method: 'POST', body: { fromAccountId, toAccountNumber, amount, description } }),
+};
+
+const demo = DEMO_MODE ? createDemoApi() : null;
+
+export const api = demo ? demo.api : httpApi;
+
+/** Registers a callback fired when the session has expired (401 from a protected route). */
+export const setUnauthorizedHandler = (fn) => {
+  onUnauthorized = fn;
+  demo?.setUnauthorizedHandler(fn);
 };

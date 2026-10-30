@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { api } from '../api.js';
+import { api, DEMO_MODE } from '../api.js';
 
 const EMPTY = { name: '', email: '', password: '', confirm: '' };
 const DEMO_PASSWORD = 'Demo1234';
@@ -195,8 +195,8 @@ export default function AuthPage({ focusSignal = 0, onAuthenticated }) {
             </button>
           </p>
 
-          {/* Demo users only exist when the dev server seeds them (server/data/seed.js). */}
-          {import.meta.env.DEV && !isRegister && (
+          {/* Demo users exist when the dev server seeds them (server/data/seed.js) and in the static demo build. */}
+          {(import.meta.env.DEV || DEMO_MODE) && !isRegister && (
             <div className="demo">
               <p className="demo__title">Demo accounts · password <code>{DEMO_PASSWORD}</code></p>
               <div className="demo__list">
@@ -214,6 +214,11 @@ export default function AuthPage({ focusSignal = 0, onAuthenticated }) {
                   </button>
                 ))}
               </div>
+              {DEMO_MODE && (
+                <p className="demo__note">
+                  This is a demo. Accounts and money are stored only in this browser, not on a server.
+                </p>
+              )}
             </div>
           )}
         </form>

@@ -633,6 +633,10 @@ h1, h2, h3, p {
   color: var(--text);
   font-weight: 600;
 }
+.demo__note {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
 .demo__list {
   display: flex;
   flex-wrap: wrap;

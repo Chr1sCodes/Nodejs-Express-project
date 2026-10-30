@@ -4,26 +4,9 @@ import { SESSION_COOKIE } from '../middleware/auth.js';
 import { rateLimit } from '../middleware/rateLimit.js';
 import { badRequest, conflict, unauthorized } from '../errors.js';
 import { inTransaction } from '../data/db.js';
+import { validateRegistration } from '../validation.js';
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SESSION_TTL_MS = 1000 * 60 * 60 * 8; // 8 hours
-
-function validateRegistration(body) {
-  const errors = [];
-  const name = typeof body?.name === 'string' ? body.name.trim() : '';
-  const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '';
-  const password = typeof body?.password === 'string' ? body.password : '';
-
-  if (!name) errors.push('name is required');
-  else if (name.length > 100) errors.push('name must be 100 characters or fewer');
-  if (!EMAIL_RE.test(email) || email.length > 254) errors.push('a valid email is required');
-  if (password.length < 8) errors.push('password must be at least 8 characters');
-  else if (password.length > 128) errors.push('password must be 128 characters or fewer');
-  else if (!/[A-Za-z]/.test(password) || !/\d/.test(password))
-    errors.push('password must contain at least one letter and one number');
-
-  return { name, email, password, errors };
-}
 
 export function createAuthRouter({ db, users, sessions, accounts, secureCookies, loginRateLimit }) {
   const router = Router();

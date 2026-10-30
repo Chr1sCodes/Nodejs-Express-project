@@ -24,10 +24,12 @@ A full-stack banking demo. The **React** single-page app talks to a **Node.js/Ex
 ## Project structure
 
 ```
+.github/workflows/pages.yml  Builds the static demo and deploys it to GitHub Pages
 client/                     React SPA (Vite root)
   src/
     App.jsx                 Auth state; switches between Home, AuthPage and Dashboard
-    api.js                  Fetch wrapper for the REST API
+    api.js                  Fetch wrapper for the REST API (or the demo API in demo builds)
+    demoApi.js              Browser-only API for the GitHub Pages demo (localStorage)
     format.js               Currency/date formatting helpers
     components/
       Home.jsx              Signed-out home page: services column + popular stocks
@@ -42,6 +44,7 @@ server/
   index.js                  Entry point
   app.js                    Express app factory (middleware, routes, static hosting)
   errors.js                 HTTP error helpers
+  validation.js             Input validation shared by the routes and the demo API
   middleware/
     auth.js                 Session loading, requireAuth, JSON-only (CSRF) guard
     rateLimit.js            In-memory rate limiter
@@ -56,7 +59,8 @@ server/
     userRepository.js
     sessionRepository.js
     accountRepository.js    Balances + ledger, atomic money movement
-    seed.js                 Demo users, accounts and transaction history
+    demoData.js             Demo users and their transaction history
+    seed.js                 Writes the demo data into SQLite
   seed.js                   `npm run seed` CLI
 test/
   api.test.js               API integration tests (node:test)
@@ -99,6 +103,22 @@ npm start          # Express serves the API and dist/ on http://localhost:3001
 ```
 
 In production, session cookies are marked `Secure`, so serve the app over HTTPS. To try the production build locally over plain HTTP, run `SECURE_COOKIES=false npm start`.
+
+### GitHub Pages (static demo)
+
+GitHub Pages only hosts static files, so it can't run the Express API or the SQLite database. The workflow in `.github/workflows/pages.yml` publishes a **demo build** instead. It's built with `VITE_DEMO_MODE=true`, which swaps the HTTP client for [client/src/demoApi.js](client/src/demoApi.js). That module has the same API, validation rules, demo users and sample stock data as the server, but stores everything in the visitor's browser (`localStorage`).
+
+- Every push to `main` runs the tests, builds the demo, and deploys it to `https://<user>.github.io/<repo>/`.
+- **One-time setup:** in the repo go to **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**. With "Deploy from a branch" selected, Pages publishes this README instead of the app.
+- Each visitor gets their own private copy of the data. Nothing is sent to a server, and clearing site data resets it.
+- To try the demo build locally:
+
+  ```bash
+  VITE_DEMO_MODE=true VITE_BASE=/Nodejs-Express-project/ npm run build
+  VITE_BASE=/Nodejs-Express-project/ npx vite preview   # http://localhost:4173/Nodejs-Express-project/
+  ```
+
+To run the real full-stack app online, deploy it to a Node host (for example Render, Railway or Fly.io) with `npm run build && npm start`.
 
 ### Tests
 
