@@ -7,12 +7,14 @@ function PersonIcon() {
   );
 }
 
-export default function Header({ user, theme, onToggleTheme, onLogout, onAccountClick }) {
+export default function Header({ user, theme, onToggleTheme, onLogout, onHome, onAccountClick }) {
   return (
     <header className="header">
       <div className="container header__inner">
         <h1 className="logo">
-          <span className="logo__mark" aria-hidden="true">◆</span> Nova Bank
+          <button type="button" className="logo__btn" onClick={onHome} aria-label="Nova Bank home">
+            <span className="logo__mark" aria-hidden="true">◆</span> Nova Bank
+          </button>
         </h1>
         <div className="header__actions">
           <button

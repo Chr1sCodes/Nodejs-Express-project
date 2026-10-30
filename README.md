@@ -26,10 +26,11 @@ A full-stack banking demo. The **React** single-page app talks to a **Node.js/Ex
 ```
 client/                     React SPA (Vite root)
   src/
-    App.jsx                 Auth state; switches between AuthPage and Dashboard
+    App.jsx                 Auth state; switches between Home, AuthPage and Dashboard
     api.js                  Fetch wrapper for the REST API
     format.js               Currency/date formatting helpers
     components/
+      Home.jsx              Signed-out home page: title + list of banking services
       AuthPage.jsx          Login + register forms
       Dashboard.jsx         Overview, accounts and activity
       AccountCard.jsx
@@ -68,7 +69,7 @@ npm install
 npm run dev        # API on :3001 + Vite dev server on :5173 (proxies /api)
 ```
 
-Open http://localhost:5173 and sign in with a demo user, or create your own account.
+Open http://localhost:5173. The home page lists Nova Bank's services. Click the person icon in the header to sign in with a demo user or create your own account.
 
 ### Demo data
 
