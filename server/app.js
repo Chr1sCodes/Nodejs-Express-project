@@ -8,7 +8,7 @@ import { createAuthRouter } from './routes/auth.js';
 import { createAccountRouter } from './routes/accounts.js';
 import { loadSession, requireJson } from './middleware/auth.js';
 import { createMarket } from './services/market.js';
-import { AppError } from './errors.js';
+import { requestId, errorLogger, errorHandler } from './middleware/errors.js';
 
 /**
  * Builds the Express app. The database is injected so tests can use an in-memory instance.
@@ -19,6 +19,7 @@ export function createApp({
   secureCookies = false,
   loginRateLimit = { windowMs: 15 * 60 * 1000, max: 20 },
   market = createMarket(),
+  logger = console,
 } = {}) {
   const app = express();
   const users = createUserRepository(db);
@@ -26,6 +27,7 @@ export function createApp({
   const accounts = createAccountRepository(db);
 
   app.disable('x-powered-by');
+  app.use(requestId());
   app.use((_req, res, next) => {
     res.set({
       'X-Content-Type-Options': 'nosniff',
@@ -53,16 +55,8 @@ export function createApp({
     app.get(/^(?!\/api).*/, (_req, res) => res.sendFile(join(staticDir, 'index.html')));
   }
 
-  // eslint-disable-next-line no-unused-vars
-  app.use((err, _req, res, _next) => {
-    if (err instanceof AppError) {
-      return res.status(err.status).json({ error: err.message, details: err.details });
-    }
-    if (err.type === 'entity.parse.failed') return res.status(400).json({ error: 'Invalid JSON' });
-    if (err.type === 'entity.too.large') return res.status(413).json({ error: 'Payload too large' });
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
-  });
+  app.use(errorLogger({ logger }));
+  app.use(errorHandler());
 
   app.locals.sessions = sessions;
   return app;

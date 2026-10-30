@@ -40,3 +40,22 @@ const shutdown = () => {
 };
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
+
+const logFatal = (kind) => (err) => {
+  console.error(
+    JSON.stringify({
+      time: new Date().toISOString(),
+      level: 'fatal',
+      kind,
+      error: err?.message ?? String(err),
+      name: err?.name,
+      stack: err?.stack,
+    }),
+  );
+};
+process.on('unhandledRejection', logFatal('unhandledRejection'));
+process.on('uncaughtException', (err) => {
+  logFatal('uncaughtException')(err);
+  // The process may be in an unknown state after an uncaught exception, so exit and let it restart.
+  process.exit(1);
+});

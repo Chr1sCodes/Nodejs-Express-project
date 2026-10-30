@@ -4,6 +4,8 @@ import { createDatabase } from '../server/data/db.js';
 import { createApp } from '../server/app.js';
 import { seedDemoData, DEMO_USERS, DEMO_PASSWORD } from '../server/data/seed.js';
 
+const silentLogger = { warn() {}, error() {} };
+
 describe('demo seed data', () => {
   let db;
   let server;
@@ -12,7 +14,7 @@ describe('demo seed data', () => {
   before(async () => {
     db = createDatabase(':memory:');
     assert.equal(await seedDemoData(db), true);
-    server = createApp({ db }).listen(0);
+    server = createApp({ db, logger: silentLogger }).listen(0);
     await new Promise((r) => server.once('listening', r));
     base = `http://127.0.0.1:${server.address().port}/api`;
   });

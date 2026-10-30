@@ -4,6 +4,8 @@ import { createDatabase } from '../server/data/db.js';
 import { createApp } from '../server/app.js';
 import { createMarket } from '../server/services/market.js';
 
+const silentLogger = { warn() {}, error() {} };
+
 describe('sample market data', () => {
   test('advances prices only as time passes', () => {
     let t = 0;
@@ -32,7 +34,7 @@ describe('sample market data', () => {
 
   test('GET /api/market/popular is public and labeled as sample data', async () => {
     const db = createDatabase(':memory:');
-    const server = createApp({ db }).listen(0);
+    const server = createApp({ db, logger: silentLogger }).listen(0);
     await new Promise((r) => server.once('listening', r));
     try {
       const res = await fetch(`http://127.0.0.1:${server.address().port}/api/market/popular`);

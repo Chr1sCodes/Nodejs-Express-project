@@ -45,6 +45,7 @@ server/
   middleware/
     auth.js                 Session loading, requireAuth, JSON-only (CSRF) guard
     rateLimit.js            In-memory rate limiter
+    errors.js               Request IDs, error logging, JSON error responses
   services/password.js      scrypt hashing / verification
   services/market.js        Simulated stock prices (in-memory random walk)
   routes/
@@ -61,6 +62,7 @@ test/
   api.test.js               API integration tests (node:test)
   seed.test.js              Demo data integrity + login tests
   market.test.js            Sample market data + endpoint tests
+  errors.test.js            Error logging middleware tests
 ```
 
 ## Getting started
@@ -112,6 +114,21 @@ npm test
 | `DB_FILE`        | `data/bank.db` | Path to the SQLite file                            |
 | `SECURE_COOKIES` | `true` in prod | Set to `false` to allow cookies over plain HTTP    |
 | `SEED_DEMO_DATA` | `true` in dev  | Seed demo users into an empty database             |
+
+### Error logging
+
+Every API request gets an ID, returned in the `X-Request-Id` response header. When a request fails, the server writes one JSON line to the console:
+
+```json
+{"time":"…","level":"warn","requestId":"8d43d89e-…","method":"POST","path":"/api/auth/login","status":401,"userId":null,"error":"Invalid email or password"}
+```
+
+- Client errors (4xx) are logged at `warn` level.
+- Server errors (5xx) are logged at `error` level with the stack trace. The client only sees `{ "error": "Internal server error", "requestId": "…" }`, so you can find the matching log line from the request ID.
+- Request bodies, cookies and query strings are never logged, so passwords and session tokens stay out of the logs.
+- Unhandled promise rejections and uncaught exceptions are logged at `fatal` level. After an uncaught exception the process exits so it can be restarted cleanly.
+
+`createApp({ logger })` accepts any object with `warn` and `error` methods (default `console`), so you can plug in a different logger or silence logs in tests.
 
 ## REST API
 

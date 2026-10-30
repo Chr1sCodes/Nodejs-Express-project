@@ -4,13 +4,15 @@ import { createDatabase } from '../server/data/db.js';
 import { createApp } from '../server/app.js';
 import { parseAmount } from '../server/routes/accounts.js';
 
+const silentLogger = { warn() {}, error() {} };
+
 let server;
 let base;
 let db;
 
 before(async () => {
   db = createDatabase(':memory:');
-  server = createApp({ db, loginRateLimit: { windowMs: 60_000, max: 1000 } }).listen(0);
+  server = createApp({ db, logger: silentLogger, loginRateLimit: { windowMs: 60_000, max: 1000 } }).listen(0);
   await new Promise((r) => server.once('listening', r));
   base = `http://127.0.0.1:${server.address().port}/api`;
 });
@@ -138,7 +140,7 @@ describe('auth', () => {
   });
 
   test('login is rate limited', async () => {
-    const limited = createApp({ db, loginRateLimit: { windowMs: 60_000, max: 2 } }).listen(0);
+    const limited = createApp({ db, logger: silentLogger, loginRateLimit: { windowMs: 60_000, max: 2 } }).listen(0);
     await new Promise((r) => limited.once('listening', r));
     const url = `http://127.0.0.1:${limited.address().port}/api/auth/login`;
     const attempt = () =>
