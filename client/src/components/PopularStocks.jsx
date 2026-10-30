@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../api.js';
 
 const REFRESH_MS = 5000;
+const RETRY_MIN_MS = 1000;
 const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 const signed = (n, suffix = '') => `${n > 0 ? '+' : n < 0 ? '−' : ''}${Math.abs(n).toFixed(2)}${suffix}`;
 
@@ -23,22 +24,49 @@ function Sparkline({ points, up }) {
 
 export default function PopularStocks() {
   const [data, setData] = useState(null);
-  const [error, setError] = useState('');
+  const [reconnecting, setReconnecting] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    const load = () => {
+    let timer;
+    let retryMs = RETRY_MIN_MS;
+
+    const schedule = (ms) => {
+      clearTimeout(timer);
+      timer = setTimeout(load, ms);
+    };
+
+    // On failure, retry quickly (1s, 2s, 4s, capped at the normal refresh) so the
+    // table recovers soon after the API comes back, e.g. after a server restart.
+    function load() {
       if (document.hidden) return;
       api
         .popularStocks()
-        .then((d) => !cancelled && (setData(d), setError('')))
-        .catch(() => !cancelled && setError('Market data is unavailable right now.'));
+        .then((d) => {
+          if (cancelled) return;
+          setData(d);
+          setReconnecting(false);
+          retryMs = RETRY_MIN_MS;
+          schedule(REFRESH_MS);
+        })
+        .catch(() => {
+          if (cancelled) return;
+          setReconnecting(true);
+          schedule(retryMs);
+          retryMs = Math.min(retryMs * 2, REFRESH_MS);
+        });
+    }
+
+    const onVisible = () => {
+      if (!document.hidden) load();
     };
+
     load();
-    const id = setInterval(load, REFRESH_MS);
+    document.addEventListener('visibilitychange', onVisible);
     return () => {
       cancelled = true;
-      clearInterval(id);
+      clearTimeout(timer);
+      document.removeEventListener('visibilitychange', onVisible);
     };
   }, []);
 
@@ -49,15 +77,19 @@ export default function PopularStocks() {
           Popular stocks
         </h3>
         {data && (
-          <span className="stocks__updated">
-            Updated {new Date(data.updatedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })}
+          <span className="stocks__updated" role="status">
+            {reconnecting
+              ? 'Reconnecting…'
+              : `Updated ${new Date(data.updatedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })}`}
           </span>
         )}
       </div>
 
       <div className="stocks__card">
-        {error && !data ? (
-          <p className="stocks__empty">{error}</p>
+        {reconnecting && !data ? (
+          <p className="stocks__empty" role="status">
+            <span className="spinner" /> Reconnecting to market data…
+          </p>
         ) : !data ? (
           <p className="stocks__empty">
             <span className="spinner" /> Loading quotes…
