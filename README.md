@@ -52,7 +52,11 @@ server/
     userRepository.js
     sessionRepository.js
     accountRepository.js    Balances + ledger, atomic money movement
-test/api.test.js            API integration tests (node:test)
+    seed.js                 Demo users, accounts and transaction history
+  seed.js                   `npm run seed` CLI
+test/
+  api.test.js               API integration tests (node:test)
+  seed.test.js              Demo data integrity + login tests
 ```
 
 ## Getting started
@@ -64,7 +68,22 @@ npm install
 npm run dev        # API on :3001 + Vite dev server on :5173 (proxies /api)
 ```
 
-Open http://localhost:5173 and create an account.
+Open http://localhost:5173 and sign in with a demo user, or create your own account.
+
+### Demo data
+
+When the database is empty, the dev server fills it with three users who are already registered. Each one has a checking and a savings account with about a month of transaction history. All of them use the password **`Demo1234`**.
+
+| Name         | Email               | Checking     | Savings      |
+| ------------ | ------------------- | ------------ | ------------ |
+| Ada Lovelace | `ada@example.com`   | `1000000001` | `1000000002` |
+| Alan Turing  | `alan@example.com`  | `1000000003` | `1000000004` |
+| Grace Hopper | `grace@example.com` | `1000000005` | `1000000006` |
+
+- In dev mode the sign-in page shows buttons that fill in each demo user's email and password.
+- Seeding never runs on a database that already has users. To reseed, stop the server, delete `data/bank.db`, and start it again.
+- To seed manually, run `npm run seed` (this respects `DB_FILE`).
+- Seeding is off by default in production. You can force it on with `SEED_DEMO_DATA=true`, but never do that on a real deployment.
 
 ### Production
 
@@ -88,6 +107,7 @@ npm test
 | `PORT`           | `3001`         | HTTP port for Express                              |
 | `DB_FILE`        | `data/bank.db` | Path to the SQLite file                            |
 | `SECURE_COOKIES` | `true` in prod | Set to `false` to allow cookies over plain HTTP    |
+| `SEED_DEMO_DATA` | `true` in dev  | Seed demo users into an empty database             |
 
 ## REST API
 

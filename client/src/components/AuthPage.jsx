@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { api } from '../api.js';
 
 const EMPTY = { name: '', email: '', password: '', confirm: '' };
+const DEMO_PASSWORD = 'Demo1234';
+const DEMO_EMAILS = ['ada@example.com', 'alan@example.com', 'grace@example.com'];
 
 function passwordStrength(pw) {
   let score = 0;
@@ -184,6 +186,28 @@ export default function AuthPage({ onAuthenticated }) {
               {isRegister ? 'Sign in' : 'Create one'}
             </button>
           </p>
+
+          {/* Demo users only exist when the dev server seeds them (server/data/seed.js). */}
+          {import.meta.env.DEV && !isRegister && (
+            <div className="demo">
+              <p className="demo__title">Demo accounts · password <code>{DEMO_PASSWORD}</code></p>
+              <div className="demo__list">
+                {DEMO_EMAILS.map((email) => (
+                  <button
+                    key={email}
+                    type="button"
+                    className="chip"
+                    onClick={() => {
+                      setForm((f) => ({ ...f, email, password: DEMO_PASSWORD }));
+                      setError('');
+                    }}
+                  >
+                    {email}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </form>
       </section>
     </main>

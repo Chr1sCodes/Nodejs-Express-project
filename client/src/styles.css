@@ -392,6 +392,28 @@ h1, h2, h3, p {
 .strength--3 .strength__bar span { background: #10b981; }
 .strength--4 .strength__bar span { background: #059669; }
 
+.demo {
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.demo__title {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.demo__title code {
+  color: var(--text);
+  font-weight: 600;
+}
+.demo__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
 /* Dashboard */
 .dashboard {
   display: flex;
