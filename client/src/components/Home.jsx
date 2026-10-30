@@ -1,31 +1,25 @@
 const SERVICES = [
   {
-    icon: '🏦',
     title: 'Checking accounts',
     text: 'An everyday account for paying bills and spending, opened automatically when you join.',
   },
   {
-    icon: '🐷',
     title: 'Savings accounts',
     text: 'A separate account for setting money aside, kept apart from your spending.',
   },
   {
-    icon: '⇄',
     title: 'Instant transfers',
     text: 'Move money between your own accounts, or send it to another member by account number.',
   },
   {
-    icon: '💵',
     title: 'Deposits & withdrawals',
     text: 'Add or take out money at any time, and see your balance update instantly.',
   },
   {
-    icon: '📊',
     title: 'Activity & monthly summary',
     text: 'A full transaction history with running balances, plus your money in and out this month.',
   },
   {
-    icon: '🔒',
     title: 'Secure online banking',
     text: 'Hashed passwords, sessions that expire, and money movements that either fully complete or don’t happen at all.',
   },
@@ -48,13 +42,8 @@ export default function Home({ onGetStarted }) {
         <ul className="services">
           {SERVICES.map((s) => (
             <li key={s.title} className="service">
-              <span className="service__icon" aria-hidden="true">
-                {s.icon}
-              </span>
-              <div>
-                <h4 className="service__title">{s.title}</h4>
-                <p className="service__text">{s.text}</p>
-              </div>
+              <h4 className="service__title">{s.title}</h4>
+              <p className="service__text">{s.text}</p>
             </li>
           ))}
         </ul>

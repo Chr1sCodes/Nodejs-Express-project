@@ -30,7 +30,7 @@ client/                     React SPA (Vite root)
     api.js                  Fetch wrapper for the REST API
     format.js               Currency/date formatting helpers
     components/
-      Home.jsx              Signed-out home page: title + list of banking services
+      Home.jsx              Signed-out home page: services column + title
       AuthPage.jsx          Login + register forms
       Dashboard.jsx         Overview, accounts and activity
       AccountCard.jsx
